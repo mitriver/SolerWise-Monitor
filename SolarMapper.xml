@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "https://mybatis.org/dtd/mybatis-3-0-mapper.dtd">
+
+<mapper namespace="com.solar.monitor.mapper.SolarMapper">
+
+    <select id="getCurrentEfficiency" resultType="Double">
+        SELECT efficiency FROM solar_log ORDER BY log_id DESC LIMIT 1
+    </select>
+
+    <insert id="insertAlertLog" parameterType="com.solar.monitor.dto.AlertDTO">
+        INSERT INTO alert_log (location, efficiency, message, status)
+        VALUES (#{location}, #{efficiency}, #{message}, #{status})
+    </insert>
+
+    <select id="selectLastLogId" resultType="int">
+        SELECT LAST_INSERT_ID()
+    </select>
+
+    <select id="findAllAlertLogs" resultType="com.solar.monitor.dto.AlertLog">
+        SELECT * FROM alert_log ORDER BY alert_id DESC
+    </select>
+
+    <select id="findPendingLogs" resultType="com.solar.monitor.dto.GenerationLog">
+        SELECT * FROM solar_log WHERE status = 'PENDING'
+    </select>
+
+    <update id="updateLogStatus">
+        UPDATE alert_log SET status = #{status} WHERE alert_id = #{id}
+    </update>
+
+    <select id="findLocationByInverterId" resultType="String">
+        SELECT location FROM inverter_info WHERE inverter_id = #{inverterId}
+    </select>
+
+</mapper>
